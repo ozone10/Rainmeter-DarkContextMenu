@@ -98,6 +98,8 @@
   <ItemGroup>
     <ClCompile Include="PluginDarkContextMenu.cpp" />
     <ResourceCompile Include="Plugin.rc" />
+    <ClInclude Include="PluginDarkContextMenu.h" />
+    <ClInclude Include="StdAfx.h" />
     <ClInclude Include="version.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
