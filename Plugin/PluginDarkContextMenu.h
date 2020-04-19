@@ -24,6 +24,9 @@ struct Measure {
     bool mode = false;
     bool force = false;
     bool tooltips = false;
+    int countTips = -1;
+    DWORD dwProcessID = 0;
+    std::vector<HWND> hTips;
     bool validVer = false;
     bool error = false;
 };
@@ -38,6 +41,6 @@ enum class PreferredAppMode {
 
 void SetDarkMode(struct Measure* skin, HMODULE hUxtheme);
 void SetTheme(struct Measure* measure);
-void SetThemeForTooltips(struct Measure* measure);
-inline void SetContextOrTooltips(struct Measure* measure);
+void GetTooltips(struct Measure* measure);
+inline void SetThemeForTooltips(struct Measure* measure);
 inline void SetDefaultMeasureValues(struct Measure* measure);

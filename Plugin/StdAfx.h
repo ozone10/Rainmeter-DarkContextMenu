@@ -17,6 +17,7 @@
 #pragma once
 
 #include <stdlib.h>
+#include <vector>
 
 // WinAPI
 #include <Windows.h>

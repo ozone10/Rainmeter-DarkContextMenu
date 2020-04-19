@@ -3,7 +3,7 @@
 #define PLUGIN_NAME             "DarkContextMenu"
 #define PLUGIN_VER_MAJOR        1
 #define PLUGIN_VER_MINOR        1
-#define PLUGIN_VER_REVISION     0
+#define PLUGIN_VER_REVISION     1
 #define PLUGIN_VER_BUILD        0
 #define PLUGIN_AUTHOR           "oZone"
 #define PLUGIN_YEAR             2020

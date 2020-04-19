@@ -94,37 +94,34 @@ void SetTheme(struct Measure* measure)
     FreeLibrary(hUxtheme);
 }
 
-void SetThemeForTooltips(struct Measure* measure)
+void GetTooltips(struct Measure* measure)
 {
-    DWORD dwProcessID = 0;
-    GetWindowThreadProcessId(measure->hWnd, &dwProcessID);
-    HWND curHWnd = nullptr;
+    HWND hTooltip = nullptr;
+    measure->countTips = 0;
     do
     {
-        curHWnd = FindWindowEx(nullptr, curHWnd, nullptr, nullptr);
+        hTooltip = FindWindowEx(nullptr, hTooltip, nullptr, nullptr);
         DWORD checkProcessID = 0;
-        GetWindowThreadProcessId(curHWnd, &checkProcessID);
+        GetWindowThreadProcessId(hTooltip, &checkProcessID);
 
-        if (checkProcessID == dwProcessID) {
+        if (checkProcessID == measure->dwProcessID) {
             WCHAR szClassName[256];
 
-            if (GetWindow(curHWnd, GW_OWNER) == measure->hWnd
-                && GetClassName(curHWnd, szClassName, 256) != 0
+            if (GetWindow(hTooltip, GW_OWNER) == measure->hWnd
+                && GetClassName(hTooltip, szClassName, 256) != 0
                 && wcscmp(szClassName, L"tooltips_class32") == 0)
             {
-                SetWindowTheme(curHWnd, measure->mode ? L"DarkMode_Explorer" : nullptr, nullptr);
+                measure->hTips.push_back(hTooltip);
+                measure->countTips += 1;
             }
         }
-    } while (curHWnd != nullptr);
+    } while (hTooltip != nullptr);
 }
 
-void SetContextOrTooltips(struct Measure* measure)
+void SetThemeForTooltips(struct Measure* measure)
 {
-    if (measure->tooltips) {
-        SetThemeForTooltips(measure);
-    }
-    else {
-        SetTheme(measure);
+    for (auto hTooltips : measure->hTips) {
+        SetWindowTheme(hTooltips, L"DarkMode_Explorer", nullptr);
     }
 }
 
@@ -149,7 +146,14 @@ PLUGIN_EXPORT void Initialize(void** data, void* rm)
     measure->force = RmReadInt(rm, L"Force", 0) > 0;
     measure->tooltips = RmReadInt(rm, L"Tooltips", 0) > 0;
 
-    SetContextOrTooltips(measure);
+    if (measure->tooltips) {
+        if (measure->mode) {
+            GetWindowThreadProcessId(measure->hWnd, &measure->dwProcessID);
+        }
+    }
+    else {
+        SetTheme(measure);
+    }
 
     if (measure->error) {
         RmLog(rm, LOG_ERROR, L"Could not load library uxtheme.dll.");
@@ -157,12 +161,9 @@ PLUGIN_EXPORT void Initialize(void** data, void* rm)
     }
 }
 
-PLUGIN_EXPORT void Reload(void* data, void* /*rm*/, double* /*maxValue*/)
+PLUGIN_EXPORT void Reload(void* /*data*/, void* /*rm*/, double* /*maxValue*/)
 {
-    auto measure = static_cast<Measure*>(data);
-    if (measure->tooltips) {
-        SetThemeForTooltips(measure);
-    }
+    /*auto measure = static_cast<Measure*>(data);*/
 }
 
 PLUGIN_EXPORT double Update(void* data)
@@ -171,8 +172,14 @@ PLUGIN_EXPORT double Update(void* data)
     if (!measure->validVer || measure->error) {
         return -1.0;
     }
-    if (measure->tooltips) {
-        SetThemeForTooltips(measure);
+    if (measure->tooltips && measure->mode) {
+        if (measure->countTips == -1) {
+                GetTooltips(measure);
+        }
+        if (measure->countTips > 0) {
+            SetThemeForTooltips(measure);
+        }
+        return static_cast<double>(measure->countTips);
     }
     return (measure->mode ? 1.0 : 0.0);
 }
@@ -212,7 +219,9 @@ PLUGIN_EXPORT void Finalize(void* data)
     }
     else {
         SetDefaultMeasureValues(measure);
-        SetContextOrTooltips(measure);
+        if (!measure->tooltips) {
+            SetTheme(measure);
+        }
     }
     delete measure;
 }
