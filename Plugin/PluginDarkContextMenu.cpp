@@ -161,9 +161,15 @@ PLUGIN_EXPORT void Initialize(void** data, void* rm)
     }
 }
 
-PLUGIN_EXPORT void Reload(void* /*data*/, void* /*rm*/, double* /*maxValue*/)
+PLUGIN_EXPORT void Reload(void* data, void* /*rm*/, double* /*maxValue*/)
 {
-    /*auto measure = static_cast<Measure*>(data);*/
+    auto measure = static_cast<Measure*>(data);
+    if (measure->countTips != -1 && measure->tooltips && measure->mode) {
+        GetTooltips(measure);
+        if (measure->countTips > 0) {
+            SetThemeForTooltips(measure);
+        }
+    }
 }
 
 PLUGIN_EXPORT double Update(void* data)
