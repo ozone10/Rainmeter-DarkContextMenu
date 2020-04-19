@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2019 oZone
+  Copyright (C) 2019-2020 oZone
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
@@ -23,6 +23,7 @@ struct Measure {
     HWND hWnd = nullptr;
     bool mode = false;
     bool force = false;
+    bool tooltips = false;
     bool validVer = false;
     bool error = false;
 };
@@ -37,4 +38,6 @@ enum class PreferredAppMode {
 
 void SetDarkMode(struct Measure* skin, HMODULE hUxtheme);
 void SetTheme(struct Measure* measure);
+void SetThemeForTooltips(struct Measure* measure);
+inline void SetContextOrTooltips(struct Measure* measure);
 inline void SetDefaultMeasureValues(struct Measure* measure);

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2019 oZone
+  Copyright (C) 2019-2020 oZone
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
@@ -71,7 +71,7 @@ void SetTheme(struct Measure* measure)
         return;
     }
 
-    const HMODULE hUxtheme = LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
+    const HMODULE hUxtheme = LoadLibraryEx(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
 
     if (hUxtheme == nullptr) {
         measure->error = true;
@@ -88,9 +88,44 @@ void SetTheme(struct Measure* measure)
         _AllowDarkModeForWindow(measure->hWnd, measure->mode);
         SetDarkMode(measure, hUxtheme);
         _FlushMenuThemes();
+        SetWindowTheme(measure->hWnd, measure->mode ? L"DarkMode_Explorer" : nullptr, nullptr);
     }
 
     FreeLibrary(hUxtheme);
+}
+
+void SetThemeForTooltips(struct Measure* measure)
+{
+    DWORD dwProcessID = 0;
+    GetWindowThreadProcessId(measure->hWnd, &dwProcessID);
+    HWND curHWnd = nullptr;
+    do
+    {
+        curHWnd = FindWindowEx(nullptr, curHWnd, nullptr, nullptr);
+        DWORD checkProcessID = 0;
+        GetWindowThreadProcessId(curHWnd, &checkProcessID);
+
+        if (checkProcessID == dwProcessID) {
+            WCHAR szClassName[256];
+
+            if (GetWindow(curHWnd, GW_OWNER) == measure->hWnd
+                && GetClassName(curHWnd, szClassName, 256) != 0
+                && wcscmp(szClassName, L"tooltips_class32") == 0)
+            {
+                SetWindowTheme(curHWnd, measure->mode ? L"DarkMode_Explorer" : nullptr, nullptr);
+            }
+        }
+    } while (curHWnd != nullptr);
+}
+
+void SetContextOrTooltips(struct Measure* measure)
+{
+    if (measure->tooltips) {
+        SetThemeForTooltips(measure);
+    }
+    else {
+        SetTheme(measure);
+    }
 }
 
 void SetDefaultMeasureValues(struct Measure* measure)
@@ -112,17 +147,22 @@ PLUGIN_EXPORT void Initialize(void** data, void* rm)
     measure->hWnd = RmGetSkinWindow(rm);
     measure->mode = RmReadInt(rm, L"DarkMode", 0) > 0;
     measure->force = RmReadInt(rm, L"Force", 0) > 0;
+    measure->tooltips = RmReadInt(rm, L"Tooltips", 0) > 0;
 
-    SetTheme(measure);
+    SetContextOrTooltips(measure);
+
     if (measure->error) {
         RmLog(rm, LOG_ERROR, L"Could not load library uxtheme.dll.");
         SetDefaultMeasureValues(measure);
     }
 }
 
-PLUGIN_EXPORT void Reload(void* /*data*/, void* /*rm*/, double* /*maxValue*/)
+PLUGIN_EXPORT void Reload(void* data, void* /*rm*/, double* /*maxValue*/)
 {
-    //auto measure = static_cast<Measure*>(data);
+    auto measure = static_cast<Measure*>(data);
+    if (measure->tooltips) {
+        SetThemeForTooltips(measure);
+    }
 }
 
 PLUGIN_EXPORT double Update(void* data)
@@ -130,6 +170,9 @@ PLUGIN_EXPORT double Update(void* data)
     auto measure = static_cast<Measure*>(data);
     if (!measure->validVer || measure->error) {
         return -1.0;
+    }
+    if (measure->tooltips) {
+        SetThemeForTooltips(measure);
     }
     return (measure->mode ? 1.0 : 0.0);
 }
@@ -140,7 +183,11 @@ PLUGIN_EXPORT LPCWSTR GetString(void* data)
     if (!measure->validVer || measure->error) {
         return L"Error";
     }
+    if (measure->tooltips) {
+        return (measure->mode ? L"Dark Tooltips" : L"Light Tooltips");
+    }
     return (measure->mode ? L"Dark" : L"Light");
+    
 }
 
 //PLUGIN_EXPORT void ExecuteBang(void* data, LPCWSTR args)
@@ -165,7 +212,7 @@ PLUGIN_EXPORT void Finalize(void* data)
     }
     else {
         SetDefaultMeasureValues(measure);
-        SetTheme(measure);
+        SetContextOrTooltips(measure);
     }
     delete measure;
 }
