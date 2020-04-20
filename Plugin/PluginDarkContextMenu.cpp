@@ -98,8 +98,7 @@ void GetTooltips(struct Measure* measure)
 {
     HWND hTooltip = nullptr;
     measure->countTips = 0;
-    do
-    {
+    do {
         hTooltip = FindWindowEx(nullptr, hTooltip, nullptr, nullptr);
         DWORD checkProcessID = 0;
         GetWindowThreadProcessId(hTooltip, &checkProcessID);
@@ -140,6 +139,7 @@ PLUGIN_EXPORT void Initialize(void** data, void* rm)
         RmLog(rm, LOG_WARNING, L"Wrong Windows version, need at least Windows 10 1809 (October 2018 Update, 10.0.17763)");
         return;
     }
+
     measure->validVer = true;
     measure->hWnd = RmGetSkinWindow(rm);
     measure->mode = RmReadInt(rm, L"DarkMode", 0) > 0;
@@ -166,9 +166,6 @@ PLUGIN_EXPORT void Reload(void* data, void* /*rm*/, double* /*maxValue*/)
     auto measure = static_cast<Measure*>(data);
     if (measure->countTips != -1 && measure->tooltips && measure->mode) {
         GetTooltips(measure);
-        if (measure->countTips > 0) {
-            SetThemeForTooltips(measure);
-        }
     }
 }
 
@@ -178,15 +175,17 @@ PLUGIN_EXPORT double Update(void* data)
     if (!measure->validVer || measure->error) {
         return -1.0;
     }
+
     if (measure->tooltips && measure->mode) {
         if (measure->countTips == -1) {
-                GetTooltips(measure);
+            GetTooltips(measure);
         }
         if (measure->countTips > 0) {
             SetThemeForTooltips(measure);
         }
         return static_cast<double>(measure->countTips);
     }
+
     return (measure->mode ? 1.0 : 0.0);
 }
 
@@ -196,11 +195,12 @@ PLUGIN_EXPORT LPCWSTR GetString(void* data)
     if (!measure->validVer || measure->error) {
         return L"Error";
     }
+
     if (measure->tooltips) {
         return (measure->mode ? L"Dark Tooltips" : L"Light Tooltips");
     }
+
     return (measure->mode ? L"Dark" : L"Light");
-    
 }
 
 //PLUGIN_EXPORT void ExecuteBang(void* data, LPCWSTR args)
