@@ -223,11 +223,9 @@ PLUGIN_EXPORT void Finalize(void* data)
     else if (measure->error) {
         RmLog(LOG_ERROR, L"Could not load library uxtheme.dll.");
     }
-    else {
+    else if (!measure->tooltips) {
         SetDefaultMeasureValues(measure);
-        if (!measure->tooltips) {
-            SetTheme(measure);
-        }
+        SetTheme(measure);
     }
     delete measure;
 }

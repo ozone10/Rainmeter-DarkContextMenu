@@ -32,7 +32,7 @@ For more information, check the [Rainmeter forum](https://forum.rainmeter.net/vi
 -   **Tooltips** - Option to use theme on skin tooltips.
 
     -   Value **0** - use theme on every Rainmeter context menu, default value.
-    -   Value **1** - use theme on skin tooltips, will ignore "Force" option.
+    -   Value **1** - use theme on skin tooltips, will ignore `Force` option.
 
 * * *
 
