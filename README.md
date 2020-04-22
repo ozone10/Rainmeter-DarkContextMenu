@@ -16,6 +16,14 @@ For more information, check the [Rainmeter forum](https://forum.rainmeter.net/vi
 
 * * *
 
+<p align="center">
+  <img src="https://i.imgur.com/3gbFxfI.png">
+  <br><br>
+  <img src="https://i.imgur.com/SIAmcZY.png">
+</p>
+
+* * *
+
 ## Options
 
 -   **DarkMode** - Option to choose theme.
