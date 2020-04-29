@@ -104,11 +104,11 @@ void GetTooltips(struct Measure* measure)
         GetWindowThreadProcessId(hTooltip, &checkProcessID);
 
         if (checkProcessID == measure->dwProcessID) {
-            WCHAR szClassName[256];
+            WCHAR szClassName[64] = { 0 };
 
             if (GetWindow(hTooltip, GW_OWNER) == measure->hWnd
-                && GetClassName(hTooltip, szClassName, 256) != 0
-                && wcscmp(szClassName, L"tooltips_class32") == 0)
+                && GetClassName(hTooltip, szClassName, _countof(szClassName)) > 0
+                && wcscmp(szClassName, TOOLTIPS_CLASS) == 0)
             {
                 measure->hTips.push_back(hTooltip);
                 measure->countTips += 1;
