@@ -14,6 +14,8 @@ Since Windows 10 build 10.0.18362, 1903 (May 2019 update) it is possible to use 
 
 For more information, check the [Rainmeter forum](https://forum.rainmeter.net/viewtopic.php?f=128&t=33028).
 
+Check my other Rainmeter plugin [TranslucentRM](https://github.com/ozone10/Rainmeter-TranslucentRM).
+
 * * *
 
 <p align="center">
