@@ -32,7 +32,7 @@ inline bool IsAtLeastWin10Build(DWORD buildNumber)
     OSVERSIONINFOEXW osvi;
     osvi.dwOSVersionInfoSize = sizeof(osvi);
     osvi.dwBuildNumber = buildNumber;
-    return VerifyVersionInfoW(&osvi, VER_BUILDNUMBER, mask) != FALSE;
+    return VerifyVersionInfo(&osvi, VER_BUILDNUMBER, mask) != FALSE;
 }
 
 void SetDarkMode(struct Measure* skin, HMODULE hUxtheme)
@@ -56,7 +56,7 @@ void SetDarkMode(struct Measure* skin, HMODULE hUxtheme)
         }
     }
     else {
-        using ADMFA = bool(WINAPI*)(bool allow);
+        using ADMFA = bool (WINAPI*)(bool allow);
         const auto _AllowDarkModeForApp = reinterpret_cast<ADMFA>(ord135);
 
         if (_AllowDarkModeForApp != nullptr) {
@@ -71,7 +71,7 @@ void SetTheme(struct Measure* measure)
         return;
     }
 
-    const HMODULE hUxtheme = LoadLibraryEx(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
+    const HMODULE hUxtheme = LoadLibraryEx(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_USER_DIRS | LOAD_LIBRARY_SEARCH_SYSTEM32);
 
     if (hUxtheme == nullptr) {
         measure->error = true;
