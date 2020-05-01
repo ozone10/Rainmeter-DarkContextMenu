@@ -41,7 +41,7 @@ void SetDarkMode(struct Measure* skin, HMODULE hUxtheme)
     auto useDarkMode = skin->mode;
 
     if (IsAtLeastWin10Build(VER_1903)) {
-        using SPAM = PreferredAppMode(WINAPI*)(PreferredAppMode appMode);
+        using SPAM = PreferredAppMode (WINAPI*)(PreferredAppMode appMode);
         const auto _SetPreferredAppMode = reinterpret_cast<SPAM>(ord135);
 
         if (_SetPreferredAppMode != nullptr) {
@@ -78,8 +78,8 @@ void SetTheme(struct Measure* measure)
         return;
     }
 
-    using ADMFW = bool(WINAPI*)(HWND hWnd, bool allow);
-    using FMT = void(WINAPI*)();
+    using ADMFW = bool (WINAPI*)(HWND hWnd, bool allow);
+    using FMT = void (WINAPI*)();
 
     const auto _AllowDarkModeForWindow = reinterpret_cast<ADMFW>(GetProcAddress(hUxtheme, MAKEINTRESOURCEA(133)));
     const auto _FlushMenuThemes = reinterpret_cast<FMT>(GetProcAddress(hUxtheme, MAKEINTRESOURCEA(136)));
@@ -103,12 +103,12 @@ void GetTooltips(struct Measure* measure)
         DWORD checkProcessID = 0;
         GetWindowThreadProcessId(hTooltip, &checkProcessID);
 
-        if (checkProcessID == measure->dwProcessID) {
-            WCHAR szClassName[64] = { 0 };
+        if (checkProcessID == measure->ownerProcessID) {
+            WCHAR className[64] = { 0 };
 
             if (GetWindow(hTooltip, GW_OWNER) == measure->hWnd
-                && GetClassName(hTooltip, szClassName, _countof(szClassName)) > 0
-                && wcscmp(szClassName, TOOLTIPS_CLASS) == 0)
+                && GetClassName(hTooltip, className, _countof(className)) > 0
+                && wcscmp(className, TOOLTIPS_CLASS) == 0)
             {
                 measure->hTips.push_back(hTooltip);
                 measure->countTips += 1;
@@ -148,7 +148,7 @@ PLUGIN_EXPORT void Initialize(void** data, void* rm)
 
     if (measure->tooltips) {
         if (measure->mode) {
-            GetWindowThreadProcessId(measure->hWnd, &measure->dwProcessID);
+            GetWindowThreadProcessId(measure->hWnd, &measure->ownerProcessID);
         }
     }
     else {
