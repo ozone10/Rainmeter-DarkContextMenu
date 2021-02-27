@@ -28,26 +28,26 @@ Check my other Rainmeter plugin [TranslucentRM](https://github.com/ozone10/Rainm
 
 ## Options
 
-- **DarkMode** - Option to choose theme.
+-   **DarkMode** - Option to choose theme.
 
-  - Value **0** - light theme, default value.
-  - Value **1** - dark theme.
+    -   Value **0** - light theme, default value.
+    -   Value **1** - dark theme.
 
-- **Force** - Option to force theme.
+-   **Force** - Option to force theme.
     Require at least Windows 10 build 10.0.18362, 1903 (May 2019 update).
 
-  - Value **0** - rely on system wide theme for apps, default value.
-  - Value **1** - force to use selected theme.
+    -   Value **0** - rely on system wide theme for apps, default value.
+    -   Value **1** - force to use selected theme.
 
-- **Tooltips** - Option to use theme on skin tooltips.
-  - Value **0** - use theme on every Rainmeter context menu, default value.
-  - Value **1** - use theme on skin tooltips, will ignore `Force` option.
+-   **Tooltips** - Option to use theme on skin tooltips.
+    -   Value **0** - use theme on every Rainmeter context menu, default value.
+    -   Value **1** - use theme on skin tooltips, will ignore `Force` option.
 
 * * *
 
 ## Examples
 
-- **Example 1:**
+-   **Example 1:**
     Always use dark theme.
 
 ```ini
@@ -58,7 +58,7 @@ DarkMode=1
 Force=1
 ```
 
-- **Example 2:**
+-   **Example 2:**
     Use theme based on system wide theme for apps.  
     Need to restart Rainmeter, if system wide theme for apps is changed.
 
@@ -70,7 +70,7 @@ DarkMode=1
 Force=0
 ```
 
-- **Example 3:**
+-   **Example 3:**
     Use dark theme on current skin tooltips.  
 
 ```ini
