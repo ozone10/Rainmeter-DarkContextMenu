@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2019-2020 oZone
+  Copyright (C) 2019-2022 oZone
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
@@ -21,15 +21,17 @@
 // have been commented out. Uncomment any functions as needed.
 // For more information, see the SDK docs: https://docs.rainmeter.net/developers/plugin/cpp/
 
+static bool isWin11 = false;
+
 inline bool IsAtLeastWin10Build(DWORD buildNumber)
 {
     if (!IsWindows10OrGreater()) {
         return false;
     }
 
-    auto mask = VerSetConditionMask(0, VER_BUILDNUMBER, VER_GREATER_EQUAL);
+    const auto mask = VerSetConditionMask(0, VER_BUILDNUMBER, VER_GREATER_EQUAL);
 
-    OSVERSIONINFOEXW osvi;
+    OSVERSIONINFOEXW osvi{};
     osvi.dwOSVersionInfoSize = sizeof(osvi);
     osvi.dwBuildNumber = buildNumber;
     return VerifyVersionInfo(&osvi, VER_BUILDNUMBER, mask) != FALSE;
@@ -38,7 +40,7 @@ inline bool IsAtLeastWin10Build(DWORD buildNumber)
 void SetDarkMode(struct Measure* skin, HMODULE hUxtheme)
 {
     const auto ord135 = GetProcAddress(hUxtheme, MAKEINTRESOURCEA(135));
-    auto useDarkMode = skin->mode;
+    const auto useDarkMode = skin->mode;
 
     if (IsAtLeastWin10Build(VER_1903)) {
         using SPAM = PreferredAppMode (WINAPI*)(PreferredAppMode appMode);
@@ -62,6 +64,11 @@ void SetDarkMode(struct Measure* skin, HMODULE hUxtheme)
         if (_AllowDarkModeForApp != nullptr) {
             _AllowDarkModeForApp(useDarkMode);
         }
+    }
+
+    if (isWin11) {
+        const auto useWin11DarkMode = static_cast<BOOL>(useDarkMode);
+        DwmSetWindowAttribute(skin->hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &useWin11DarkMode, sizeof(BOOL));
     }
 }
 
@@ -104,11 +111,11 @@ void GetTooltips(struct Measure* measure)
         GetWindowThreadProcessId(hTooltip, &checkProcessID);
 
         if (checkProcessID == measure->ownerProcessID) {
-            WCHAR className[64] = { 0 };
+            WCHAR className[64] = {'\0'};
 
             if (GetWindow(hTooltip, GW_OWNER) == measure->hWnd
-                && GetClassName(hTooltip, className, _countof(className)) > 0
-                && wcscmp(className, TOOLTIPS_CLASS) == 0)
+                && GetClassName(hTooltip, &className[0], _countof(className)) > 0
+                && wcscmp(&className[0], TOOLTIPS_CLASS) == 0)
             {
                 measure->hTips.push_back(hTooltip);
                 measure->countTips += 1;
@@ -139,6 +146,8 @@ PLUGIN_EXPORT void Initialize(void** data, void* rm)
         RmLog(rm, LOG_WARNING, L"Wrong Windows version, need at least Windows 10 1809 (October 2018 Update, 10.0.17763)");
         return;
     }
+
+    isWin11 = IsAtLeastWin10Build(BUILD_WIN11);
 
     measure->validVer = true;
     measure->hWnd = RmGetSkinWindow(rm);
@@ -228,4 +237,5 @@ PLUGIN_EXPORT void Finalize(void* data)
         SetTheme(measure);
     }
     delete measure;
+    measure = nullptr;
 }

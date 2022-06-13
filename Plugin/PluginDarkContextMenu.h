@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2019-2020 oZone
+  Copyright (C) 2019-2022 oZone
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
@@ -16,8 +16,10 @@
 
 #pragma once
 
-const DWORD VER_1809 = 17763; // Windows 10 1809 (October 2018 Update)
-const DWORD VER_1903 = 18362; // Windows 10 1903 (May 2019 Update)
+constexpr DWORD VER_1809 = 17763; // Windows 10 1809 (October 2018 Update)
+constexpr DWORD VER_1903 = 18362; // Windows 10 1903 (May 2019 Update)
+
+constexpr DWORD BUILD_WIN11 = 22000; // Windows 11 first "stable" build
 
 struct Measure {
     HWND hWnd = nullptr;
