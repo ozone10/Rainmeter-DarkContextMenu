@@ -3,7 +3,7 @@
 #define VER_PLUGIN_NAME_STR     "DarkContextMenu"
 #define VER_PLUGIN_MAJOR        1
 #define VER_PLUGIN_MINOR        2
-#define VER_PLUGIN_REVISION     0
+#define VER_PLUGIN_REVISION     1
 #define VER_PLUGIN_BUILD        0
 #define VER_PLUGIN_AUTHOR_STR   "oZone"
 #define VER_PLUGIN_YEAR         2022

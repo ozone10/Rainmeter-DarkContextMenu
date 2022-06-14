@@ -37,10 +37,10 @@ inline bool IsAtLeastWin10Build(DWORD buildNumber)
     return VerifyVersionInfo(&osvi, VER_BUILDNUMBER, mask) != FALSE;
 }
 
-void SetDarkMode(struct Measure* skin, HMODULE hUxtheme)
+void SetDarkMode(struct Measure* measure, HMODULE hUxtheme)
 {
     const auto ord135 = GetProcAddress(hUxtheme, MAKEINTRESOURCEA(135));
-    const auto useDarkMode = skin->mode;
+    const auto useDarkMode = measure->mode;
 
     if (IsAtLeastWin10Build(VER_1903)) {
         using SPAM = PreferredAppMode (WINAPI*)(PreferredAppMode appMode);
@@ -48,7 +48,7 @@ void SetDarkMode(struct Measure* skin, HMODULE hUxtheme)
 
         if (_SetPreferredAppMode != nullptr) {
             PreferredAppMode mode;
-            if (skin->force) {
+            if (measure->force) {
                 mode = useDarkMode ? PreferredAppMode::ForceDark : PreferredAppMode::ForceLight;
             }
             else {
@@ -64,11 +64,6 @@ void SetDarkMode(struct Measure* skin, HMODULE hUxtheme)
         if (_AllowDarkModeForApp != nullptr) {
             _AllowDarkModeForApp(useDarkMode);
         }
-    }
-
-    if (isWin11) {
-        const auto useWin11DarkMode = static_cast<BOOL>(useDarkMode);
-        DwmSetWindowAttribute(skin->hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &useWin11DarkMode, sizeof(BOOL));
     }
 }
 
@@ -137,6 +132,12 @@ void SetDefaultMeasureValues(struct Measure* measure)
     measure->force = false;
 }
 
+void SetThemeWin11(struct Measure* measure)
+{
+    const auto useWin11DarkMode = static_cast<BOOL>(measure->mode);
+    DwmSetWindowAttribute(measure->hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &useWin11DarkMode, sizeof(useWin11DarkMode));
+}
+
 PLUGIN_EXPORT void Initialize(void** data, void* rm)
 {
     auto measure = new Measure;
@@ -154,6 +155,7 @@ PLUGIN_EXPORT void Initialize(void** data, void* rm)
     measure->mode = RmReadInt(rm, L"DarkMode", 0) > 0;
     measure->force = RmReadInt(rm, L"Force", 0) > 0;
     measure->tooltips = RmReadInt(rm, L"Tooltips", 0) > 0;
+    measure->win11Mode = RmReadInt(rm, L"Win11DM", 0) > 0;
 
     if (measure->tooltips) {
         if (measure->mode) {
@@ -162,6 +164,15 @@ PLUGIN_EXPORT void Initialize(void** data, void* rm)
     }
     else {
         SetTheme(measure);
+    }
+
+    if (measure->win11Mode) {
+        if (isWin11) {
+            SetThemeWin11(measure);
+        }
+        else {
+            RmLog(rm, LOG_DEBUG, L"DWMWA_USE_IMMERSIVE_DARK_MODE is supported only on Window 11");
+        }
     }
 
     if (measure->error) {
@@ -195,7 +206,7 @@ PLUGIN_EXPORT double Update(void* data)
         return static_cast<double>(measure->countTips);
     }
 
-    return (measure->mode ? 1.0 : 0.0);
+    return ((measure->win11Mode && isWin11) ? 2.0 : measure->mode ? 1.0 : 0.0);
 }
 
 PLUGIN_EXPORT LPCWSTR GetString(void* data)
@@ -209,7 +220,7 @@ PLUGIN_EXPORT LPCWSTR GetString(void* data)
         return (measure->mode ? L"Dark Tooltips" : L"Light Tooltips");
     }
 
-    return (measure->mode ? L"Dark" : L"Light");
+    return ((measure->win11Mode && isWin11) ? L"Dark Windows 11" : measure->mode ? L"Dark" : L"Light");
 }
 
 //PLUGIN_EXPORT void ExecuteBang(void* data, LPCWSTR args)

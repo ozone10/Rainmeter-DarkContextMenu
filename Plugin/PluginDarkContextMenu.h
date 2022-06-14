@@ -31,6 +31,8 @@ struct Measure {
     std::vector<HWND> hTips;
     bool validVer = false;
     bool error = false;
+
+    bool win11Mode = false;
 };
 
 enum class PreferredAppMode {
@@ -43,8 +45,9 @@ enum class PreferredAppMode {
 
 inline bool IsAtLeastWin10Build(DWORD buildNumber);
 
-void SetDarkMode(struct Measure* skin, HMODULE hUxtheme);
+void SetDarkMode(struct Measure* measure, HMODULE hUxtheme);
 void SetTheme(struct Measure* measure);
 void GetTooltips(struct Measure* measure);
 inline void SetThemeForTooltips(struct Measure* measure);
 inline void SetDefaultMeasureValues(struct Measure* measure);
+inline void SetThemeWin11(struct Measure* measure);
