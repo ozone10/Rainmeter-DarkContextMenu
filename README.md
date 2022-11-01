@@ -1,12 +1,13 @@
 # Rainmeter-DarkContextMenu
 
-[![Build status](https://img.shields.io/github/workflow/status/ozone10/Rainmeter-DarkContextMenu/Build/master?logo=Github)](https://github.com/ozone10/Rainmeter-DarkContextMenu)
+[![Rainmeter](https://img.shields.io/badge/Rainmeter-Plugin-blue.svg?&logo=rainmeter)](https://www.rainmeter.net)
+[![Build status](https://img.shields.io/github/workflow/status/ozone10/Rainmeter-DarkContextMenu/Build/master?logo=Github)](https://github.com/ozone10/Rainmeter-DarkContextMenu/actions)
 [![Build status](https://img.shields.io/appveyor/ci/ozone10/Rainmeter-DarkContextMenu/master?logo=Appveyor)](https://ci.appveyor.com/project/ozone10/rainmeter-darkcontextmenu/branch/master)
 [![Latest release](https://img.shields.io/github/v/release/ozone10/Rainmeter-DarkContextMenu?include_prereleases)](https://github.com/ozone10/Rainmeter-DarkContextMenu/releases/latest)
 [![Total downloads](https://img.shields.io/github/downloads/ozone10/Rainmeter-DarkContextMenu/total.svg)](https://github.com/ozone10/Rainmeter-DarkContextMenu/releases)
 [![Licence](https://img.shields.io/github/license/ozone10/Rainmeter-DarkContextMenu?color=9cf)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
-[Rainmeter](https://www.rainmeter.net) plugin that allows to use Windows 10 dark theme for every context menu in Rainmeter (not only skins but also Rainmeter program itself) and on skin tooltips.
+Rainmeter plugin that allows to use Windows 10 dark theme for every context menu in Rainmeter (not only skins but also Rainmeter program itself) and on skin tooltips.
 
 Minimal requirements are Windows 10 build 10.0.17763, 1809 (October 2018 update), and enabled dark theme for apps.  
 Since Windows 10 build 10.0.18362, 1903 (May 2019 update) it is possible to use dark theme ignoring system wide theme for apps.  
