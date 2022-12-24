@@ -1,7 +1,7 @@
 # Rainmeter-DarkContextMenu
 
 [![Rainmeter](https://img.shields.io/badge/Rainmeter-Plugin-blue.svg?&logo=rainmeter)](https://www.rainmeter.net)
-[![Build status](https://img.shields.io/github/workflow/status/ozone10/Rainmeter-DarkContextMenu/Build/master?logo=Github)](https://github.com/ozone10/Rainmeter-DarkContextMenu/actions)
+[![Build status](https://img.shields.io/github/actions/workflow/status/ozone10/Rainmeter-DarkContextMenu/build.yml?branch=master&logo=Github)](https://github.com/ozone10/Rainmeter-DarkContextMenu/actions)
 [![Build status](https://img.shields.io/appveyor/ci/ozone10/Rainmeter-DarkContextMenu/master?logo=Appveyor)](https://ci.appveyor.com/project/ozone10/rainmeter-darkcontextmenu/branch/master)
 [![Latest release](https://img.shields.io/github/v/release/ozone10/Rainmeter-DarkContextMenu?include_prereleases)](https://github.com/ozone10/Rainmeter-DarkContextMenu/releases/latest)
 [![Total downloads](https://img.shields.io/github/downloads/ozone10/Rainmeter-DarkContextMenu/total.svg)](https://github.com/ozone10/Rainmeter-DarkContextMenu/releases)
